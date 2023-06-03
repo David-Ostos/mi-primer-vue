@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const name = "Vue dinamico";
 
@@ -86,10 +86,41 @@ const objetFruit = {
   
   const disminuir = () => counter.value--;
 
-  const reset = () => counter.value = 0;
+  const reset = () =>{ 
+    counter.value = 0;
+    arrayAdd.value = [];
+    };
 
   // parte 7 computed
-  const parte7 = true
+// importamos de la libreria de vue computed desde la linea 2
+  const parte7 = false
+
+  const classCounter = computed(() =>{
+    if(counter.value === 0){
+      return 'zero'
+    }if (counter.value > 0) {
+      return 'positive'
+    } else {
+      return 'negative'
+    }
+  });
+
+  //parte 8
+  const parte8 = true;
+  const arrayAdd = ref([]);
+
+  const aggNumber = computed(() => { 
+    arrayAdd.value.push(counter.value)
+  });
+
+  const disable = computed(() => {
+    const numSerch = arrayAdd.value.find((pepito) => pepito === counter.value);
+    console.log(numSerch);
+/*     if(numSerch === 0) return true;
+    return numSerch ? true : false; */
+    return numSerch || numSerch === 0;
+  })
+
 </script>
 
 <template>
@@ -176,17 +207,35 @@ const objetFruit = {
 
     <!--parte 7-->
     <div v-if="parte7">
-    <h2 :style="`color: ${counter < 0 ? color[0] : color[1]} `">{{ counter }}</h2>
-    <h2 :class="counter >= 0 ? 'positive' : 'negative'">
+    <h2 :class="classCounter">
         {{ counter }}
     </h2>
     <button v-on:click="increment">Aumentar</button>
     <button v-on:click="disminuir"> Disminuir</button>
     <button v-on:click="reset"> Reset</button>
   </div>
+
+      <!--parte 8 parctica-->
+      <div v-if="parte8">
+    <h2 :class="classCounter">
+        {{ counter }}
+    </h2>
+    <button v-on:click="increment">Aumentar</button>
+    <button v-on:click="disminuir"> Disminuir</button>
+    <button v-on:click="reset"> Reset</button>
+    <button v-on:click="aggNumber" :disabled="disable">Add</button>
+    <ul>
+      <li v-for="number in arrayAdd">
+        {{ number }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style>
+body{
+  text-align: center;
+}
 li{
   list-style: none;
 }
@@ -201,5 +250,8 @@ h1 {
 }
 .positive{
   color: green;
+}
+.zero{
+  color: white;
 }
 </style>
